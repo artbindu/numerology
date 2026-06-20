@@ -1,0 +1,22 @@
+{
+  "name": "numerology-web",
+  "version": "1.0.0",
+  "author": "Biswasindhu Mandal",
+  "description": "Numerology web app for DOB, Mulank, and Bhagyank insights",
+  "scripts": {
+    "build": "esbuild src/web/app.js --bundle --platform=browser --format=iife --outfile=public/app.js --sourcemap",
+    "dev": "esbuild src/web/app.js --bundle --platform=browser --format=iife --outfile=public/app.js --sourcemap --watch",
+    "preview": "serve public --listen 4173",
+    "start": "npm run build && npm run preview",
+    "check": "node --check src/web/app.js && node --check src/core/numerology.js && node --check src/core/validation.js && node --check src/core/colors.js && node --check src/tools/special-date.js",
+    "ci": "npm run check && npm run build"
+  },
+  "engines": {
+    "node": ">=20 <21"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.8",
+    "serve": "^14.2.4"
+  },
+  "license": "MIT"
+}
