@@ -31,7 +31,19 @@ const normalizeDigitInput = function (value, label) {
   return n;
 };
 
+const normalizeName = function (value) {
+  const cleaned = value.trim();
+  const lettersOnly = cleaned.replace(/[^A-Za-z]/g, "");
+
+  if (!lettersOnly) {
+    throw new Error("Name must contain at least one alphabet letter.");
+  }
+
+  return cleaned;
+};
+
 module.exports = {
   normalizeDob,
-  normalizeDigitInput
+  normalizeDigitInput,
+  normalizeName
 };

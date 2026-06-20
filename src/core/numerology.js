@@ -88,6 +88,9 @@ const favoriteColors = [
   }
 ];
 
+/**
+ * Chaldean / commonly used Hindu numerology letter values.
+ */
 const letterNumerologyValues = {
   A: 1,
   B: 2,
@@ -115,6 +118,18 @@ const letterNumerologyValues = {
   X: 5,
   Y: 1,
   Z: 7
+};
+
+const letterNumerologyOutcomes = {
+  1: "Leadership, individuality, ambition, confidence.",
+  2: "Cooperation, diplomacy, intuition, emotional sensitivity.",
+  3: "Creativity, expression, optimism, social energy.",
+  4: "Discipline, practicality, structure, persistence.",
+  5: "Adaptability, communication, freedom, versatility.",
+  6: "Responsibility, care, harmony, family orientation.",
+  7: "Spirituality, introspection, wisdom, analytical thinking.",
+  8: "Power, authority, material achievement, resilience.",
+  9: "Compassion, sacrifice, humanitarian ideals."
 };
 
 const getPlanetaryRuler = function (number) {
@@ -148,6 +163,26 @@ const getNumberDetails = function (number, label) {
   };
 };
 
+const getNameNumber = function (name) {
+  const cleanedName = name.toUpperCase().replace(/[^A-Z]/g, "");
+
+  const total = cleanedName
+    .split("")
+    .reduce((sum, ch) => sum + (letterNumerologyValues[ch] || 0), 0);
+
+  return reduceToSingleDigit(total);
+};
+
+const getNumerologyFromName = function (name) {
+  const nameNumber = getNameNumber(name);
+
+  return {
+    name,
+    nameNumber,
+    nameDetails: getNumberDetails(nameNumber, "name")
+  };
+};
+
 const getNumerologyFromDob = function (dob) {
   const m = mulank(dob);
   const b = bhagyanka(dob);
@@ -172,5 +207,7 @@ module.exports = {
   getLuckyColorProfile,
   enrichLuckyProfile,
   getNumberDetails,
+  getNameNumber,
+  getNumerologyFromName,
   getNumerologyFromDob
 };

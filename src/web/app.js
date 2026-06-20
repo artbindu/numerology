@@ -1,5 +1,5 @@
-const { getNumerologyFromDob, getNumberDetails } = require("../core/numerology");
-const { normalizeDob, normalizeDigitInput } = require("../core/validation");
+const { getNumerologyFromDob, getNumerologyFromName, getNumberDetails } = require("../core/numerology");
+const { normalizeDob, normalizeDigitInput, normalizeName } = require("../core/validation");
 const { isPalindrome, isSpecial, isSameFrequency } = require("../tools/special-date");
 
 const modeButtons = Array.from(document.querySelectorAll(".mode-btn"));
@@ -83,16 +83,25 @@ const renderDobDetails = function (dob) {
   const details = getNumerologyFromDob(dob);
   const specialDateSummary = getSpecialDateSummary(dob);
 
-  console.log("specialDateSummary:", {specialDateSummary});
-
   result.innerHTML = [
     card("Input DOB", `<p class="kpi">${details.dob}</p>`),
-    specialDateSummary.isSpecialDate ? card(
-      "Special Date Check",
-      `<p class="kpi">${specialDateSummary.isSpecialDate ? "Yes" : "No"}</p><p>${specialDateSummary.description}</p>`
-    ) : "",
+    specialDateSummary.isSpecialDate
+      ? card(
+          "Special Date Check",
+          `<p class="kpi">Yes</p><p>${specialDateSummary.description}</p>`
+        )
+      : "",
     renderNumberDetails("Mulank", details.mulankDetails),
     renderNumberDetails("Bhagyank", details.bhagyankDetails)
+  ].join("");
+};
+
+const renderNameDetails = function (name) {
+  const details = getNumerologyFromName(name);
+
+  result.innerHTML = [
+    card("Input Name", `<p class="kpi">${details.name}</p>`),
+    renderNumberDetails("Name Number", details.nameDetails)
   ].join("");
 };
 
@@ -112,6 +121,9 @@ const updateMode = function (mode) {
   if (mode === "dob") {
     inputLabel.textContent = "Date of Birth (DD-MM-YYYY)";
     input.placeholder = "24-08-1993";
+  } else if (mode === "name") {
+    inputLabel.textContent = "Name";
+    input.placeholder = "Rahul Sharma";
   } else if (mode === "mulank") {
     inputLabel.textContent = "Mulank Number (1-9)";
     input.placeholder = "6";
@@ -139,6 +151,11 @@ form.addEventListener("submit", (event) => {
   try {
     if (activeMode === "dob") {
       renderDobDetails(normalizeDob(value));
+      return;
+    }
+
+    if (activeMode === "name") {
+      renderNameDetails(normalizeName(value));
       return;
     }
 
