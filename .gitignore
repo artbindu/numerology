@@ -10,3 +10,4 @@ yarn-error.log*
 
 # Build output
 public/app.js
+public/app.js.map

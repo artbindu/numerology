@@ -1,5 +1,6 @@
 const { getNumerologyFromDob, getNumberDetails } = require("../core/numerology");
 const { normalizeDob, normalizeDigitInput } = require("../core/validation");
+const { isPalindrome, isSpecial, isSameFrequency } = require("../tools/special-date");
 
 const modeButtons = Array.from(document.querySelectorAll(".mode-btn"));
 const form = document.getElementById("numerology-form");
@@ -47,11 +48,49 @@ const renderNumberDetails = function (label, detail) {
   ].join("");
 };
 
+const getSpecialDateSummary = function (dob) {
+  const [day, month, year] = dob.split("-");
+  const ddmmyyyy = `${day}${month}${year}`;
+  const yyyymmdd = `${year}${month}${day}`;
+  const tags = [];
+
+  if (isPalindrome(ddmmyyyy) || isPalindrome(yyyymmdd)) {
+    tags.push("🔄 Palindrome");
+  }
+
+  if (isSpecial(ddmmyyyy) || isSpecial(yyyymmdd)) {
+    tags.push("👑 Mirror Pattern");
+  }
+
+  if (isSameFrequency(ddmmyyyy)) {
+    tags.push("🔢 Same Frequency Digits");
+  }
+
+  if (tags.length === 0) {
+    return {
+      isSpecialDate: false,
+      description: "No special pattern found for this DOB."
+    };
+  }
+
+  return {
+    isSpecialDate: true,
+    description: tags.join(" • ")
+  };
+};
+
 const renderDobDetails = function (dob) {
   const details = getNumerologyFromDob(dob);
+  const specialDateSummary = getSpecialDateSummary(dob);
+
+  console.log("specialDateSummary:", {specialDateSummary});
 
   result.innerHTML = [
     card("Input DOB", `<p class="kpi">${details.dob}</p>`),
+    specialDateSummary.isSpecialDate ? card(
+      "Special Date Check",
+      `<p class="kpi">${specialDateSummary.isSpecialDate ? "Yes" : "No"}</p><p>${specialDateSummary.description}</p>`
+    ) : "",
     renderNumberDetails("Mulank", details.mulankDetails),
     renderNumberDetails("Bhagyank", details.bhagyankDetails)
   ].join("");

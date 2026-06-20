@@ -41,7 +41,7 @@ function isSameFrequency(str) {
     freq[ch] = (freq[ch] || 0) + 1;
   }
 
-  return Object.values(freq).every((count) => count >= 2 && count <= 4);
+  return Object.values(freq).every((count) => count >= 2 && count <= 8);
 }
 
 function specialDate(startDate = new Date(1980, 0, 1), endDate = new Date(2030, 11, 31)) {
