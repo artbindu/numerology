@@ -18,14 +18,31 @@
 
     <main class="app">
       <header class="hero reveal">
-        <p class="eyebrow">NUMEROLOGY</p>
-        <h1>Get Your Mulank & Bhagyank Insights</h1>
-        <p class="subtitle">
-          Enter your date of birth or your name, or directly check a mulank or bhagyank number.
-        </p>
+        <div class="hero-copy">
+          <h1 class="eyebrow">NUMEROLOGY STUDIO</h1>
+          <h2 class="hero-title">Decode Your Day, Name, and Number Energy</h2>
+          <p class="subtitle">
+            Explore personality signals, planetary influence, and lucky color patterns from your birth date,
+            name value, Mulank, or Bhagyank in one clean dashboard.
+          </p>
+        </div>
+        <aside class="hero-notes" aria-label="Numerology quick view">
+          <article class="hero-note">
+            <p class="hero-note-label">Core Numbers</p>
+            <p class="hero-note-value">Mulank + Bhagyank</p>
+          </article>
+          <article class="hero-note">
+            <p class="hero-note-label">Name Energy</p>
+            <p class="hero-note-value">Letter-to-Number Map</p>
+          </article>
+          <article class="hero-note">
+            <p class="hero-note-label">Date Patterns</p>
+            <p class="hero-note-value">Palindrome & Mirror Checks</p>
+          </article>
+        </aside>
       </header>
 
-      <section class="panel reveal reveal-delay-1">
+      <section class="panel reveal reveal-delay-2">
         <div class="mode-switch" role="tablist" aria-label="Input Mode">
           <button class="mode-btn is-active" data-mode="dob" role="tab" aria-selected="true">DOB</button>
           <button class="mode-btn" data-mode="name" role="tab" aria-selected="false">Name</button>
@@ -35,8 +52,15 @@
 
         <form id="numerology-form" class="form-grid">
           <label id="input-label" for="input-value">Date of Birth (DD-MM-YYYY)</label>
-          <input id="input-value" name="value" type="text" placeholder="24-08-1993" autocomplete="off" required />
-          <button type="submit" class="cta">Show Details</button>
+          <input
+            id="input-value"
+            name="value"
+            type="text"
+            placeholder="24-08-1993"
+            autocomplete="off"
+            required
+          />
+          <button type="submit" class="cta">Generate Insight</button>
         </form>
 
         <p id="error" class="error" role="alert" aria-live="polite"></p>
