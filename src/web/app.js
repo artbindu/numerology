@@ -1,59 +1,36 @@
 const { getNumerologyFromDob, getNumerologyFromName, getNumberDetails } = require("../core/numerology");
 const { normalizeDob, normalizeDigitInput, normalizeName } = require("../core/validation");
-const { colorMeaningMap } = require("../core/colors");
+const { getColorCss, getOrderedColorEntries } = require("../core/colors");
 const { isPalindrome, isSpecial, isSameFrequency } = require("../tools/special-date");
+const { card, renderNumberDetails } = require("../utils/render");
+const { getElement, getAllElements } = require("../utils/dom");
+const {
+  isMobileViewport,
+  loadSidebarState,
+  saveSidebarState
+} = require("../utils/sidebar-state");
+const { toTitleCase } = require("../utils/text");
 const { version: APP_VERSION } = require("../../package.json");
 
-const sidebarModeButtons = Array.from(document.querySelectorAll(".sidebar-mode-btn"));
-const sidebarToggle = document.getElementById("sidebar-toggle");
+const sidebarModeButtons = getAllElements(".sidebar-mode-btn");
+const sidebarToggle = getElement("#sidebar-toggle");
 const sidebarToggleIcon = sidebarToggle ? sidebarToggle.querySelector(".material-icons") : null;
-const sidebarBackdrop = document.getElementById("sidebar-backdrop");
-const workspace = document.querySelector(".workspace");
-const form = document.getElementById("numerology-form");
-const formShell = document.querySelector(".form-shell");
-const input = document.getElementById("input-value");
-const inputLabel = document.getElementById("input-label");
-const result = document.getElementById("result");
-const colorGuide = document.getElementById("color-guide");
-const showColorGuideButton = document.getElementById("show-color-guide-btn");
-const sideNav = document.querySelector(".side-nav");
-const appVersionValue = document.getElementById("app-version");
-const currentModeValue = document.getElementById("current-mode-value");
-const error = document.getElementById("error");
+const sidebarBackdrop = getElement("#sidebar-backdrop");
+const workspace = getElement(".workspace");
+const form = getElement("#numerology-form");
+const formShell = getElement(".form-shell");
+const input = getElement("#input-value");
+const inputLabel = getElement("#input-label");
+const result = getElement("#result");
+const colorGuide = getElement("#color-guide");
+const showColorGuideButton = getElement("#show-color-guide-btn");
+const sideNav = getElement(".side-nav");
+const appVersionValue = getElement("#app-version");
+const currentModeValue = getElement("#current-mode-value");
+const error = getElement("#error");
 
 let activeMode = "dob";
 let hasRenderedColorGuide = false;
-
-const SIDEBAR_STATE_KEY = "numerology.sidebar.state.v1";
-const MOBILE_QUERY = "(max-width: 768px)";
-
-const isMobileViewport = function () {
-  return window.matchMedia(MOBILE_QUERY).matches;
-};
-
-const loadSidebarState = function () {
-  try {
-    const raw = localStorage.getItem(SIDEBAR_STATE_KEY);
-    if (!raw) {
-      return { desktopOpen: true, mobileOpen: false };
-    }
-    const parsed = JSON.parse(raw);
-    return {
-      desktopOpen: parsed.desktopOpen !== false,
-      mobileOpen: parsed.mobileOpen === true
-    };
-  } catch (_err) {
-    return { desktopOpen: true, mobileOpen: false };
-  }
-};
-
-const saveSidebarState = function (state) {
-  try {
-    localStorage.setItem(SIDEBAR_STATE_KEY, JSON.stringify(state));
-  } catch (_err) {
-    // ignore storage write failures
-  }
-};
 
 let sidebarState = loadSidebarState();
 
@@ -94,80 +71,15 @@ const syncSidebarForViewport = function () {
   setSidebarState(sidebarState.desktopOpen);
 };
 
-const card = function (title, body, spanSix) {
-  const spanClass = spanSix ? "span-6" : "";
-  return `
-    <article class="card ${spanClass}">
-      <h3>${title}</h3>
-      ${body}
-    </article>
-  `;
-};
-
-const renderLuckyProfile = function (profile) {
-  if (!profile) {
-    return "<p>No lucky profile available.</p>";
-  }
-
-  const colors = profile.colorMeanings
-    .map((entry) => `<li><strong>${entry.color}</strong>: ${entry.meaning || "No meaning available"}</li>`)
-    .join("");
-
-  return `
-    <p><strong>Sign:</strong> ${profile.sign}</p>
-    <p><strong>Status:</strong> ${profile.status}</p>
-    <ul>${colors}</ul>
-  `;
-};
-
-const renderNumberDetails = function (label, detail) {
-  return [
-    card(
-      `${label} <span class="badge">${detail.number}</span>`,
-      `<p class="kpi">${detail.number}</p><p>${detail.planetaryRuler || "No planetary detail found."}</p>`,
-      true
-    ),
-    card("Lucky Profile", renderLuckyProfile(detail.luckyProfile), true)
-  ].join("");
-};
-
-const toTitleCase = function (value) {
-  return value.replace(/\b\w/g, (ch) => ch.toUpperCase());
-};
-
-const colorNameToCss = function (name) {
-  const n = name.toLowerCase();
-  if (n === "off white" || n === "off-white") {
-    return "#f8fafc";
-  }
-  if (n === "shades of yellow") {
-    return "#facc15";
-  }
-  if (n === "dark gray" || n === "dark grey") {
-    return "#4b5563";
-  }
-  if (n === "light blue") {
-    return "#60a5fa";
-  }
-  if (n === "light green") {
-    return "#86efac";
-  }
-  if (n === "light red") {
-    return "#f87171";
-  }
-  return n;
-};
-
 const renderColorGuide = function () {
   if (!colorGuide) {
     return;
   }
 
-  const colors = Object.entries(colorMeaningMap)
-    .sort(([a], [b]) => a.localeCompare(b))
+  const colors = getOrderedColorEntries()
     .map(
       ([name, meaning]) => `
-      <li class="color-chip" style="--chip:${colorNameToCss(name)}">
+      <li class="color-chip" style="--chip:${getColorCss(name)}">
         <span class="color-dot" aria-hidden="true"></span>
         <div>
           <p class="color-chip-title">${toTitleCase(name)}</p>

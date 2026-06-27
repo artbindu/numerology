@@ -85,6 +85,30 @@ body {
   right: -120px;
 }
 
+.bg-dots {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 1px),
+    radial-gradient(rgba(139, 92, 246, 0.14) 1px, transparent 1px);
+  background-size: 28px 28px, 56px 56px;
+  background-position: 0 0, 14px 14px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.35) 68%, transparent 100%);
+  animation: dots-drift 24s linear infinite;
+}
+
+@keyframes dots-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -18px, 0);
+  }
+}
+
 .top-nav {
   position: sticky;
   top: 0;
@@ -718,7 +742,7 @@ input::placeholder {
   margin: 0.55rem 0 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.5rem;
 }
 
@@ -876,6 +900,10 @@ input::placeholder {
     grid-template-columns: 1fr;
   }
 
+  .color-guide-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .hero-notes {
     display: none;
   }
@@ -917,5 +945,9 @@ input::placeholder {
   .side-option-meta,
   .color-chip-copy {
     font-size: 0.7rem;
+  }
+
+  .color-guide-list {
+    grid-template-columns: 1fr;
   }
 }
