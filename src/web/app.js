@@ -2,6 +2,7 @@ const { getNumerologyFromDob, getNumerologyFromName, getNumberDetails } = requir
 const { normalizeDob, normalizeDigitInput, normalizeName } = require("../core/validation");
 const { colorMeaningMap } = require("../core/colors");
 const { isPalindrome, isSpecial, isSameFrequency } = require("../tools/special-date");
+const { version: APP_VERSION } = require("../../package.json");
 
 const sidebarModeButtons = Array.from(document.querySelectorAll(".sidebar-mode-btn"));
 const sidebarToggle = document.getElementById("sidebar-toggle");
@@ -16,6 +17,7 @@ const result = document.getElementById("result");
 const colorGuide = document.getElementById("color-guide");
 const showColorGuideButton = document.getElementById("show-color-guide-btn");
 const sideNav = document.querySelector(".side-nav");
+const appVersionValue = document.getElementById("app-version");
 const currentModeValue = document.getElementById("current-mode-value");
 const error = document.getElementById("error");
 
@@ -435,4 +437,7 @@ form.addEventListener("submit", (event) => {
 
 hideColorGuide();
 updateMode(activeMode);
+if (appVersionValue) {
+  appVersionValue.textContent = APP_VERSION;
+}
 syncSidebarForViewport();

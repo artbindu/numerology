@@ -122,6 +122,14 @@ body {
   background: linear-gradient(135deg, #1d4ed8, var(--primary), var(--accent));
   font-family: "Syne", sans-serif;
   font-weight: 800;
+  overflow: hidden;
+}
+
+.top-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .top-brand-title {
@@ -343,6 +351,35 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-weight: 800;
+}
+
+.side-about {
+  margin-bottom: 0.7rem;
+  padding: 0.68rem 0.72rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(139, 92, 246, 0.14), rgba(24, 24, 43, 0.92));
+}
+
+.side-about-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.side-about-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.side-about-value {
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
 }
 
 .side-nav {
