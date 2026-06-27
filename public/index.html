@@ -10,63 +10,129 @@
       href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Syne:wght@600;700;800&display=swap"
       rel="stylesheet"
     />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <div class="bg-orb bg-orb-1" aria-hidden="true"></div>
     <div class="bg-orb bg-orb-2" aria-hidden="true"></div>
 
-    <main class="app">
-      <header class="hero reveal">
-        <div class="hero-copy">
-          <h1 class="eyebrow">NUMEROLOGY STUDIO</h1>
-          <h2 class="hero-title">Decode Your Day, Name, and Number Energy</h2>
-          <p class="subtitle">
-            Explore personality signals, planetary influence, and lucky color patterns from your birth date,
-            name value, Mulank, or Bhagyank in one clean dashboard.
-          </p>
+    <header class="top-nav">
+      <div class="top-nav-left">
+        <button
+          id="sidebar-toggle"
+          class="nav-icon-btn"
+          type="button"
+          aria-controls="quick-sidebar"
+          aria-expanded="true"
+          aria-label="Toggle sidebar"
+        >
+          <span class="material-icons" aria-hidden="true">menu</span>
+        </button>
+        <div class="top-brand" aria-label="App brand">
+          <span class="top-logo" aria-hidden="true">N</span>
+          <div>
+            <p class="top-brand-title">Numerology Studio</p>
+            <p class="top-brand-sub">Dashboard</p>
+          </div>
         </div>
-        <aside class="hero-notes" aria-label="Numerology quick view">
-          <article class="hero-note">
-            <p class="hero-note-label">Core Numbers</p>
-            <p class="hero-note-value">Mulank + Bhagyank</p>
-          </article>
-          <article class="hero-note">
-            <p class="hero-note-label">Name Energy</p>
-            <p class="hero-note-value">Letter-to-Number Map</p>
-          </article>
-          <article class="hero-note">
-            <p class="hero-note-label">Date Patterns</p>
-            <p class="hero-note-value">Palindrome & Mirror Checks</p>
+      </div>
+
+      <label class="top-search" aria-label="Search">
+        <span class="material-icons" aria-hidden="true">search</span>
+        <input type="search" placeholder="Search insights, colors, history" />
+      </label>
+
+      <div class="top-actions">
+        <button class="nav-icon-btn" type="button" aria-label="Notifications">
+          <span class="material-icons" aria-hidden="true">notifications</span>
+        </button>
+        <button class="top-user" type="button" aria-label="User profile">NS</button>
+      </div>
+    </header>
+
+    <main class="app">
+      <div class="workspace reveal reveal-delay-2">
+        <button
+          id="sidebar-backdrop"
+          class="sidebar-backdrop"
+          type="button"
+          aria-label="Close sidebar"
+        ></button>
+
+        <aside id="quick-sidebar" class="sidebar" aria-label="Sidebar navigation">
+          <article class="side-card side-card-merged">
+            <div class="side-profile">
+              <div class="side-avatar" aria-hidden="true">NS</div>
+              <h3 class="side-profile-title">Numerology Studio</h3>
+              <p class="side-profile-copy">Professional numerology insights</p>
+            </div>
+            <p class="side-title">Navigation</p>
+            <nav class="side-nav" aria-label="Main navigation">
+              <button class="side-option sidebar-mode-btn is-active" data-mode="dob" aria-pressed="true">
+                <span class="material-icons side-icon" aria-hidden="true">calendar_month</span>
+                <span class="side-option-content">
+                  <span class="side-option-title">DOB Insight</span>
+                  <span class="side-option-meta">Birth date based profile</span>
+                </span>
+              </button>
+              <button class="side-option sidebar-mode-btn" data-mode="name" aria-pressed="false">
+                <span class="material-icons side-icon" aria-hidden="true">badge</span>
+                <span class="side-option-content">
+                  <span class="side-option-title">Name Insight</span>
+                  <span class="side-option-meta">Name number and meaning</span>
+                </span>
+              </button>
+              <button class="side-option sidebar-mode-btn" data-mode="mulank" aria-pressed="false">
+                <span class="material-icons side-icon" aria-hidden="true">filter_1</span>
+                <span class="side-option-content">
+                  <span class="side-option-title">Mulank Lookup</span>
+                  <span class="side-option-meta">Single number profile</span>
+                </span>
+              </button>
+              <button class="side-option sidebar-mode-btn" data-mode="bhagyank" aria-pressed="false">
+                <span class="material-icons side-icon" aria-hidden="true">filter_9_plus</span>
+                <span class="side-option-content">
+                  <span class="side-option-title">Bhagyank Lookup</span>
+                  <span class="side-option-meta">Destiny number profile</span>
+                </span>
+              </button>
+              <button id="show-color-guide-btn" class="side-option side-link" type="button">
+                <span class="material-icons side-icon" aria-hidden="true">palette</span>
+                <span class="side-option-content">
+                  <span class="side-option-title">Color Meaning Guide</span>
+                  <span class="side-option-meta">Color meaning index</span>
+                </span>
+              </button>
+            </nav>
           </article>
         </aside>
-      </header>
 
-      <section class="panel reveal reveal-delay-2">
-        <div class="mode-switch" role="tablist" aria-label="Input Mode">
-          <button class="mode-btn is-active" data-mode="dob" role="tab" aria-selected="true">DOB</button>
-          <button class="mode-btn" data-mode="name" role="tab" aria-selected="false">Name</button>
-          <button class="mode-btn" data-mode="mulank" role="tab" aria-selected="false">Mulank</button>
-          <button class="mode-btn" data-mode="bhagyank" role="tab" aria-selected="false">Bhagyank</button>
+        <div class="content-stack">
+          <section class="form-shell">
+            <form id="numerology-form" class="form-grid">
+              <label id="input-label" for="input-value">Date of Birth (DD-MM-YYYY)</label>
+              <div class="input-wrap">
+                <span class="material-icons" aria-hidden="true">calendar_month</span>
+                <input
+                  id="input-value"
+                  name="value"
+                  type="text"
+                  placeholder="24-08-1993"
+                  autocomplete="off"
+                  required
+                />
+              </div>
+              <button type="submit" class="cta">Generate Insight</button>
+            </form>
+
+            <p id="error" class="error" role="alert" aria-live="polite"></p>
+          </section>
+
+          <section id="result" class="result" aria-live="polite"></section>
+          <section id="color-guide" class="result result-max" aria-live="polite" hidden></section>
         </div>
-
-        <form id="numerology-form" class="form-grid">
-          <label id="input-label" for="input-value">Date of Birth (DD-MM-YYYY)</label>
-          <input
-            id="input-value"
-            name="value"
-            type="text"
-            placeholder="24-08-1993"
-            autocomplete="off"
-            required
-          />
-          <button type="submit" class="cta">Generate Insight</button>
-        </form>
-
-        <p id="error" class="error" role="alert" aria-live="polite"></p>
-      </section>
-
-      <section id="result" class="result reveal reveal-delay-2" aria-live="polite"></section>
+      </div>
     </main>
 
     <script src="./app.js"></script>
