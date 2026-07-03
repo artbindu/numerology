@@ -24,14 +24,15 @@ const renderLuckyProfile = function (profile) {
   `;
 };
 
-const renderNumberDetails = function (cardRenderer, label, detail) {
+const renderNumberDetails = function (label, detail, spanSix) {
+  const cardRenderer = card;
   return [
     cardRenderer(
       `${label} <span class="badge">${detail.number}</span>`,
       `<p class="kpi">${detail.number}</p><p>${detail.planetaryRuler || "No planetary detail found."}</p>`,
-      true
+      spanSix !== false
     ),
-    cardRenderer("Lucky Profile", renderLuckyProfile(detail.luckyProfile), true)
+    cardRenderer("Lucky Profile", renderLuckyProfile(detail.luckyProfile), spanSix !== false)
   ].join("");
 };
 

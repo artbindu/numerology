@@ -302,7 +302,7 @@ body {
 
 .workspace.sidebar-collapsed,
 .workspace.sidebar-closed {
-  grid-template-columns: 72px minmax(0, 1fr);
+  grid-template-columns: 120px minmax(0, 1fr);
 }
 
 .sidebar {
