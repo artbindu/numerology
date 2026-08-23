@@ -1,5 +1,5 @@
 {
-  "name": "numerology-web",
+  "name": "numerology",
   "version": "2.1.0",
   "author": "Biswasindhu Mandal",
   "description": "Numerology web app for DOB, Mulank, and Bhagyank insights",
@@ -16,7 +16,7 @@
     "ci": "npm run check && npm run build"
   },
   "engines": {
-    "node": ">=22 <24"
+    "node": ">=24.0.0"
   },
   "devDependencies": {
     "esbuild": "^0.25.8",
