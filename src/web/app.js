@@ -11,6 +11,8 @@ const {
   loadSidebarState,
   saveSidebarState
 } = require("../utils/sidebar-state");
+const { saveAppInput, loadAppInput } = require("../config/storage");
+const { MODE_CONFIG } = require("../config/appConfig");
 const { toTitleCase } = require("../utils/text");
 const { version: APP_VERSION } = require("../../package.json");
 
@@ -248,23 +250,20 @@ const updateMode = function (mode) {
     currentModeValue.textContent = mode.toUpperCase();
   }
 
-  if (mode === "dob") {
-    inputLabel.textContent = "Date of Birth (DD-MM-YYYY)";
-    input.placeholder = "24-08-1993";
-  } else if (mode === "name") {
-    inputLabel.textContent = "Name";
-    input.placeholder = "Rahul Sharma";
-  } else if (mode === "mulank") {
-    inputLabel.textContent = "Mulank Number (1-9)";
-    input.placeholder = "6";
-  } else {
-    inputLabel.textContent = "Bhagyank Number (1-9)";
-    input.placeholder = "9";
+  const config = MODE_CONFIG[mode];
+  if (config) {
+    inputLabel.textContent = config.label;
+    input.placeholder = config.placeholder;
   }
 
   input.value = "";
   error.textContent = "";
-  result.innerHTML = "";
+
+  // Load stored input for this mode
+  const storedInput = loadAppInput(mode);
+  if (storedInput && input) {
+    input.value = storedInput;
+  }
 };
 
 sidebarModeButtons.forEach((btn) => {
@@ -331,6 +330,11 @@ form.addEventListener("submit", (event) => {
   result.innerHTML = "";
   exitColorGuideMode();
 
+  // Save input to localStorage with mode-based key
+  if (value) {
+    saveAppInput(value, activeMode);
+  }
+
   try {
     if (activeMode === "dob") {
       renderDobDetails(normalizeDob(value));
@@ -343,7 +347,9 @@ form.addEventListener("submit", (event) => {
     }
 
     if (activeMode === "loshu") {
-      const analysis = getLoShuAnalysis(value);
+      const dob = normalizeDob(value);
+      const analysis = getLoShuAnalysis(dob);
+
       result.innerHTML = renderLoShuGrid(analysis);
       return;
     }

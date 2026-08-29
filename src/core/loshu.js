@@ -62,6 +62,9 @@ const createNumberCounts = function () {
 };
 
 const getDobDigits = function (dob) {
+  // Extract digits from validated DOB string (DD-MM-YYYY format).
+  // This assumes dob has already been validated by normalizeDob().
+  // Zeros are filtered out as per Lo Shu grid calculation rules.
   return String(dob)
     .replace(/\D/g, "")
     .split("")
