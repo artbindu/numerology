@@ -686,6 +686,10 @@ input::placeholder {
   transition: 0.35s;
 }
 
+.card.span-6 {
+  grid-column: span 2;
+}
+
 .card:hover {
   transform: translateY(-8px);
   box-shadow: 0 30px 60px rgba(124, 58, 237, 0.35);
@@ -949,5 +953,57 @@ input::placeholder {
 
   .color-guide-list {
     grid-template-columns: 1fr;
+  }
+
+  /* Lo Shu Grid */
+  .loshu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 420px;
+    margin: 24px auto;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .loshu-cell {
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .loshu-cell:nth-child(3n) {
+    border-right: 0;
+  }
+
+  .loshu-cell:nth-child(n + 7) {
+    border-bottom: 0;
+  }
+
+  .loshu-cell-number {
+    font-size: 14px;
+    opacity: 0.6;
+  }
+
+  .loshu-cell-digits {
+    font-size: 28px;
+    font-weight: 700;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 600px) {
+    .loshu-grid {
+      max-width: 100%;
+    }
+    .loshu-cell {
+      min-height: 90px;
+    }
+    .loshu-cell-digits {
+      font-size: 22px;
+    }
   }
 }

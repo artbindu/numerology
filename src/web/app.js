@@ -1,6 +1,8 @@
 const { getNumerologyFromDob, getNumerologyFromName, getNumberDetails } = require("../core/numerology");
 const { normalizeDob, normalizeDigitInput, normalizeName } = require("../core/validation");
 const { getColorCss, getOrderedColorEntries } = require("../core/colors");
+const { getLoShuAnalysis } = require("../core/loshu");
+const { renderLoShuGrid } = require("../utils/loshu-render");
 const { isPalindrome, isSpecial, isSameFrequency } = require("../tools/special-date");
 const { card, renderNumberDetails } = require("../utils/render");
 const { getElement, getAllElements } = require("../utils/dom");
@@ -337,6 +339,12 @@ form.addEventListener("submit", (event) => {
 
     if (activeMode === "name") {
       renderNameDetails(normalizeName(value));
+      return;
+    }
+
+    if (activeMode === "loshu") {
+      const analysis = getLoShuAnalysis(value);
+      result.innerHTML = renderLoShuGrid(analysis);
       return;
     }
 
