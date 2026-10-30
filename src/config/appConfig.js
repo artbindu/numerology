@@ -27,7 +27,7 @@ const MODE_CONFIG = {
   },
   [MODES.LOSHU]: {
     label: "Date of Birth (DD-MM-YYYY)",
-    placeholder: "27-10-1994",
+    placeholder: "28-12-1996",
     storageKey: STORAGE_KEYS[MODES.LOSHU]
   },
   [MODES.NAME]: {

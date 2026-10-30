@@ -669,6 +669,23 @@ input::placeholder {
   gap: 0.74rem;
 }
 
+.dob-summary {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: 1fr;
+  gap: 0.74rem;
+}
+
+.dob-summary.has-special-date {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.dob-summary-stack {
+  display: grid;
+  align-content: start;
+  gap: 0.74rem;
+}
+
 .result[hidden] {
   display: none !important;
 }

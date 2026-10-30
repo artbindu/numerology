@@ -19,6 +19,34 @@ const mulank = function (dob) {
   return reduceToSingleDigit(day);
 };
 
+const getCurrentAge = function (dob, today = new Date()) {
+  const [day, month, year] = dob.split("-").map(Number);
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth() + 1;
+  const isFutureDate =
+    year > currentYear ||
+    (year === currentYear &&
+      (month > currentMonth || (month === currentMonth && day > today.getDate())));
+
+  if (isFutureDate) {
+    throw new Error("DOB cannot be in the future.");
+  }
+
+  let years = currentYear - year;
+  let months = currentMonth - month;
+
+  if (today.getDate() < day) {
+    months -= 1;
+  }
+
+  if (months < 0) {
+    years -= 1;
+    months += 12;
+  }
+
+  return `${years}y ${months}m`;
+};
+
 const planetaryRulers = {
   1: "Sun: leadership, ambition, independence.",
   2: "Moon: emotions, intuition, sensitivity.",
@@ -189,6 +217,7 @@ const getNumerologyFromDob = function (dob) {
 
   return {
     dob,
+    age: getCurrentAge(dob),
     mulank: m,
     bhagyank: b,
     mulankDetails: getNumberDetails(m, "mulank"),
@@ -209,5 +238,6 @@ module.exports = {
   getNumberDetails,
   getNameNumber,
   getNumerologyFromName,
-  getNumerologyFromDob
+  getNumerologyFromDob,
+  getCurrentAge
 };

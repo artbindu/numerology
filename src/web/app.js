@@ -180,18 +180,24 @@ const getSpecialDateSummary = function (dob) {
   };
 };
 
-const renderDobDetails = function (dob) {
-  const details = getNumerologyFromDob(dob);
+const renderDobDetails = function (dob, details = getNumerologyFromDob(dob)) {
   const specialDateSummary = getSpecialDateSummary(dob);
+  const specialDateCard = specialDateSummary.isSpecialDate
+    ? card(
+        "Special Date Check",
+        `<p class="kpi">Yes</p><p>${specialDateSummary.description}</p>`
+      )
+    : "";
+  const summaryClass = specialDateSummary.isSpecialDate ? " has-special-date" : "";
 
   result.innerHTML = [
-    card("Input DOB", `<p class="kpi">${details.dob}</p>`),
-    specialDateSummary.isSpecialDate
-      ? card(
-          "Special Date Check",
-          `<p class="kpi">Yes</p><p>${specialDateSummary.description}</p>`
-        )
-      : "",
+    `<div class="dob-summary${summaryClass}">
+      <div class="dob-summary-stack">
+        ${card("Input DOB", `<p class="kpi">${details.dob}</p>`)}
+        ${card("Current Age", `<p class="kpi">${details.age}</p>`)}
+      </div>
+      ${specialDateCard}
+    </div>`,
     renderNumberDetails("Mulank", details.mulankDetails),
     renderNumberDetails("Bhagyank", details.bhagyankDetails)
   ].join("");
@@ -337,7 +343,13 @@ form.addEventListener("submit", (event) => {
 
   try {
     if (activeMode === "dob") {
-      renderDobDetails(normalizeDob(value));
+      const dob = normalizeDob(value);
+      const details = getNumerologyFromDob(dob);
+
+      saveAppInput(dob, activeMode);
+      saveAppInput(String(details.mulank), "mulank");
+      saveAppInput(String(details.bhagyank), "bhagyank");
+      renderDobDetails(dob, details);
       return;
     }
 
