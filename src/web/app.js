@@ -205,9 +205,16 @@ const renderDobDetails = function (dob, details = getNumerologyFromDob(dob)) {
 
 const renderNameDetails = function (name) {
   const details = getNumerologyFromName(name);
+  const safeName = String(details.name).replace(/[&<>"']/g, (character) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[character]);
 
   result.innerHTML = [
-    card("Input Name", `<p class="kpi">${details.name}</p>`),
+    card("Input Name", `<p class="kpi">${safeName}</p>`),
     renderNumberDetails("Name Number", details.nameDetails)
   ].join("");
 };
@@ -215,6 +222,27 @@ const renderNameDetails = function (name) {
 const renderSingleNumber = function (mode, number) {
   const detail = getNumberDetails(number, mode);
   result.innerHTML = renderNumberDetails(mode === "mulank" ? "Mulank" : "Bhagyank", detail);
+};
+
+const renderModeInput = function (mode, value) {
+  if (mode === "dob") {
+    renderDobDetails(normalizeDob(value));
+    return;
+  }
+
+  if (mode === "name") {
+    renderNameDetails(normalizeName(value));
+    return;
+  }
+
+  if (mode === "loshu") {
+    const dob = normalizeDob(value);
+    result.innerHTML = renderLoShuGrid(getLoShuAnalysis(dob));
+    return;
+  }
+
+  const number = normalizeDigitInput(value, mode === "mulank" ? "Mulank" : "Bhagyank");
+  renderSingleNumber(mode, number);
 };
 
 const setActiveModeUi = function (mode) {
@@ -236,6 +264,7 @@ const setColorGuideButtonActive = function (isActive) {
 
 const enterColorGuideMode = function () {
   hideNumerologyForm();
+  result.innerHTML = "";
   setActiveModeUi("");
   setColorGuideButtonActive(true);
   showColorGuide("sidebar-button");
@@ -264,11 +293,17 @@ const updateMode = function (mode) {
 
   input.value = "";
   error.textContent = "";
+  result.innerHTML = "";
 
   // Load stored input for this mode
   const storedInput = loadAppInput(mode);
   if (storedInput && input) {
     input.value = storedInput;
+    try {
+      renderModeInput(mode, storedInput);
+    } catch (e) {
+      error.textContent = e.message;
+    }
   }
 };
 
@@ -353,21 +388,7 @@ form.addEventListener("submit", (event) => {
       return;
     }
 
-    if (activeMode === "name") {
-      renderNameDetails(normalizeName(value));
-      return;
-    }
-
-    if (activeMode === "loshu") {
-      const dob = normalizeDob(value);
-      const analysis = getLoShuAnalysis(dob);
-
-      result.innerHTML = renderLoShuGrid(analysis);
-      return;
-    }
-
-    const number = normalizeDigitInput(value, activeMode === "mulank" ? "Mulank" : "Bhagyank");
-    renderSingleNumber(activeMode, number);
+    renderModeInput(activeMode, value);
   } catch (e) {
     error.textContent = e.message;
   }
