@@ -3,6 +3,7 @@ const { normalizeDob, normalizeDigitInput, normalizeName } = require("../core/va
 const { getColorCss, getOrderedColorEntries } = require("../core/colors");
 const { getLoShuAnalysis } = require("../core/loshu");
 const { renderLoShuGrid } = require("../utils/loshu-render");
+const { renderNumberMeaningDetails } = require("../utils/loshu-meaning-render");
 const { isPalindrome, isSpecial, isSameFrequency } = require("../tools/special-date");
 const { card, renderNumberDetails } = require("../utils/render");
 const { getElement, getAllElements } = require("../utils/dom");
@@ -37,6 +38,7 @@ const error = getElement("#error");
 
 let activeMode = "dob";
 let hasRenderedColorGuide = false;
+let activeLoShuMeaningContext = null;
 
 let sidebarState = loadSidebarState();
 
@@ -239,13 +241,49 @@ const renderModeInput = function (mode, value) {
 
   if (mode === "loshu") {
     const dob = normalizeDob(value);
-    result.innerHTML = renderLoShuGrid(getLoShuAnalysis(dob));
+    const analysis = getLoShuAnalysis(dob);
+    const numerology = getNumerologyFromDob(dob);
+    activeLoShuMeaningContext = {
+      analysis,
+      driverNumber: numerology.mulank,
+      destinyNumber: numerology.bhagyank
+    };
+    result.innerHTML = renderLoShuGrid(analysis, activeLoShuMeaningContext);
     return;
   }
 
   const number = normalizeDigitInput(value, mode === "mulank" ? "Mulank" : "Bhagyank");
   renderSingleNumber(mode, number);
 };
+
+if (result) {
+  result.addEventListener("click", (event) => {
+    const closeButton = event.target.closest("[data-close-loshu-detail]");
+    const detailPanel = result.querySelector("#loshu-number-detail");
+
+    if (closeButton && detailPanel) {
+      detailPanel.hidden = true;
+      detailPanel.innerHTML = "";
+      result.querySelectorAll(".loshu-cell[aria-pressed='true']").forEach((cell) => {
+        cell.setAttribute("aria-pressed", "false");
+      });
+      return;
+    }
+
+    const cell = event.target.closest("button.loshu-cell[data-loshu-number]");
+    if (!cell || !detailPanel || !activeLoShuMeaningContext) {
+      return;
+    }
+
+    const number = Number(cell.dataset.loshuNumber);
+    result.querySelectorAll(".loshu-cell").forEach((gridCell) => {
+      gridCell.setAttribute("aria-pressed", String(gridCell === cell));
+    });
+    detailPanel.innerHTML = renderNumberMeaningDetails(activeLoShuMeaningContext.analysis, number);
+    detailPanel.hidden = false;
+    detailPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  });
+}
 
 const setActiveModeUi = function (mode) {
   sidebarModeButtons.forEach((btn) => {
@@ -280,6 +318,7 @@ const exitColorGuideMode = function () {
 
 const updateMode = function (mode) {
   activeMode = mode;
+  activeLoShuMeaningContext = null;
   setActiveModeUi(mode);
   exitColorGuideMode();
 
@@ -377,6 +416,7 @@ if (resetInputButton) {
     input.value = "";
     error.textContent = "";
     result.innerHTML = "";
+    activeLoShuMeaningContext = null;
     saveAppInput("", activeMode);
     input.focus();
   });
@@ -388,6 +428,7 @@ form.addEventListener("submit", (event) => {
   const value = input.value.trim();
   error.textContent = "";
   result.innerHTML = "";
+  activeLoShuMeaningContext = null;
   exitColorGuideMode();
 
   // Save input to localStorage with mode-based key

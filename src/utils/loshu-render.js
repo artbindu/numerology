@@ -1,4 +1,6 @@
-const renderLoShuGrid = function (analysis) {
+const { renderLoShuInterpretationSections } = require("./loshu-meaning-render");
+
+const renderLoShuGrid = function (analysis, meaningContext = {}) {
   const maximumCount = Math.max(1, ...Object.values(analysis.counts));
   const gridHtml = analysis.grid
     .flat()
@@ -8,10 +10,10 @@ const renderLoShuGrid = function (analysis) {
       const occurrenceLabel = count === 1 ? "occurrence" : "occurrences";
 
       return `
-        <div class="loshu-cell loshu-cell-${number}" role="gridcell" aria-label="Number ${number}, ${count} ${occurrenceLabel}">
+        <button class="loshu-cell loshu-cell-${number}" type="button" role="gridcell" data-loshu-number="${number}" aria-pressed="false" aria-controls="loshu-number-detail" aria-label="Number ${number}, ${count} ${occurrenceLabel}. Open interpretation">
           <span class="loshu-cell-number">${number}</span>
           <span class="loshu-cell-digits">${digits}</span>
-        </div>
+        </button>
       `;
     })
     .join("");
@@ -56,6 +58,7 @@ const renderLoShuGrid = function (analysis) {
         <div class="loshu-grid" role="grid" aria-label="Traditional Lo Shu Grid">
           ${gridHtml}
         </div>
+        <section id="loshu-number-detail" class="loshu-number-detail" aria-live="polite" hidden></section>
       </section>
 
       <div class="loshu-summary-column">
@@ -91,6 +94,7 @@ const renderLoShuGrid = function (analysis) {
         </div>
         <div class="loshu-frequency-grid">${frequencyHtml}</div>
       </section>
+      ${renderLoShuInterpretationSections(analysis, meaningContext.driverNumber, meaningContext.destinyNumber)}
     </div>
   `;
 };
