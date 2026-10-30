@@ -134,7 +134,13 @@
                   required
                 />
               </div>
-              <button type="submit" class="cta">Generate Insight</button>
+              <div class="form-actions">
+                <button id="submit-button" type="submit" class="cta">Generate Insight</button>
+                <button id="reset-input-btn" type="button" class="reset-action" hidden>
+                  <span class="material-icons" aria-hidden="true">restart_alt</span>
+                  <span>Reset</span>
+                </button>
+              </div>
             </form>
 
             <p id="error" class="error" role="alert" aria-live="polite"></p>

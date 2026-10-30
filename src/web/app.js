@@ -24,6 +24,8 @@ const workspace = getElement(".workspace");
 const form = getElement("#numerology-form");
 const formShell = getElement(".form-shell");
 const input = getElement("#input-value");
+const submitButton = getElement("#submit-button");
+const resetInputButton = getElement("#reset-input-btn");
 const inputLabel = getElement("#input-label");
 const result = getElement("#result");
 const colorGuide = getElement("#color-guide");
@@ -291,6 +293,13 @@ const updateMode = function (mode) {
     input.placeholder = config.placeholder;
   }
 
+  if (submitButton) {
+    submitButton.textContent = mode === "loshu" ? "Calculate" : "Generate Insight";
+  }
+  if (resetInputButton) {
+    resetInputButton.hidden = mode !== "loshu";
+  }
+
   input.value = "";
   error.textContent = "";
   result.innerHTML = "";
@@ -362,6 +371,16 @@ document.addEventListener("keydown", (event) => {
 });
 
 window.addEventListener("resize", syncSidebarForViewport);
+
+if (resetInputButton) {
+  resetInputButton.addEventListener("click", () => {
+    input.value = "";
+    error.textContent = "";
+    result.innerHTML = "";
+    saveAppInput("", activeMode);
+    input.focus();
+  });
+}
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();

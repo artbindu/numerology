@@ -106,11 +106,13 @@ const getArrows = function (counts) {
 };
 
 const getLoShuAnalysis = function (dob) {
+  const digits = getDobDigits(dob);
   const counts = getNumberCounts(dob);
 
   return {
     dob,
-    digits: getDobDigits(dob),
+    digits,
+    totalDigits: digits.length,
     grid: LO_SHU_GRID,
     counts,
     missingNumbers: getMissingNumbers(counts),
