@@ -1,0 +1,121 @@
+const DRIVER_NUMBER_MEANINGS = {
+  1: {
+    driverNumber: 1,
+    personality: "Often described as self-directed, candid, and motivated to make an independent contribution.",
+    naturalBehavior: "May prefer to initiate, set a clear direction, and learn by taking responsibility.",
+    strengths: ["Initiative", "Self-advocacy", "Decisiveness"],
+    weaknesses: ["Impatience", "Stubbornness", "Discomfort with shared control"],
+    leadership: "Leads visibly through action and personal accountability; listening broadens the impact.",
+    career: "May enjoy roles with ownership, entrepreneurship, communication, or clear responsibility.",
+    relationships: "Values respect and honesty; mutual independence and compromise support closeness.",
+    financialTendencies: "May value financial autonomy and visible achievement; planned budgets reduce impulsive status spending.",
+    lifeChallenges: ["Balancing confidence with humility", "Accepting feedback", "Sustaining effort after a strong start"],
+    personalDevelopment: ["Invite disagreement before final decisions", "Share recognition", "Practice patient collaboration"]
+  },
+  2: {
+    driverNumber: 2,
+    personality: "Often described as considerate, perceptive, and strongly aware of the emotional tone around them.",
+    naturalBehavior: "May build trust through listening, cooperation, and attention to shared needs.",
+    strengths: ["Empathy", "Diplomacy", "Partnership"],
+    weaknesses: ["Indecision", "Over-accommodation", "Sensitivity to criticism"],
+    leadership: "Leads by inclusion and careful coordination; clear decisions prevent consensus-seeking from stalling progress.",
+    career: "May be drawn to coordination, mediation, client support, and people-centered work.",
+    relationships: "Values emotional safety and reciprocity; clear boundaries help maintain a distinct sense of self.",
+    financialTendencies: "May spend generously to help others; agreed limits and independent savings can protect security.",
+    lifeChallenges: ["Speaking up early", "Making decisions without repeated reassurance", "Separating personal feelings from others' needs"],
+    personalDevelopment: ["Practice direct requests", "Set limits on giving", "Treat respectful disagreement as useful information"]
+  },
+  3: {
+    driverNumber: 3,
+    personality: "Often described as curious, expressive, and motivated by learning and creative exchange.",
+    naturalBehavior: "May explore many ideas, communicate enthusiasm, and learn effectively through discussion.",
+    strengths: ["Creativity", "Communication", "Curiosity"],
+    weaknesses: ["Scattered attention", "Overpromising", "Uneven follow-through"],
+    leadership: "Can inspire through ideas and optimism; planning and accountability turn inspiration into shared progress.",
+    career: "May enjoy education, writing, design, media, or roles that explain and connect ideas.",
+    relationships: "Values conversation, humor, and shared interests; dependable follow-through builds trust.",
+    financialTendencies: "May invest readily in interesting experiences or learning; compare long-term value before committing.",
+    lifeChallenges: ["Prioritizing", "Completing long projects", "Separating possibility from evidence"],
+    personalDevelopment: ["Limit active projects", "Set finish dates", "Build a routine for focused learning"]
+  },
+  4: {
+    driverNumber: 4,
+    personality: "Often described as practical, methodical, and motivated by dependable plans and clear expectations.",
+    naturalBehavior: "May organize details, follow procedures, and earn trust through consistent work.",
+    strengths: ["Reliability", "Planning", "Persistence"],
+    weaknesses: ["Rigidity", "Overcaution", "Difficulty delegating"],
+    leadership: "Leads through standards and preparation; adaptability helps preserve purpose when plans change.",
+    career: "May prefer operations, administration, engineering, quality work, or other structured responsibilities.",
+    relationships: "Shows care through dependable action; flexibility and affection keep routines from feeling impersonal.",
+    financialTendencies: "May favor saving and careful planning; periodically reassess whether caution is blocking reasonable opportunities.",
+    lifeChallenges: ["Adapting to change", "Avoiding overwork", "Trusting others with important tasks"],
+    personalDevelopment: ["Review rules for usefulness", "Delegate outcomes", "Schedule rest as a real commitment"]
+  },
+  5: {
+    driverNumber: 5,
+    personality: "Often described as adaptable, mentally quick, and interested in variety and exchange.",
+    naturalBehavior: "May connect different viewpoints and adjust rapidly as circumstances develop.",
+    strengths: ["Versatility", "Communication", "Problem-solving"],
+    weaknesses: ["Restlessness", "Inconsistency", "Overanalysis"],
+    leadership: "Leads by connecting people and adapting plans; clear ownership keeps flexibility purposeful.",
+    career: "May value varied tasks, communication, analysis, mediation, or roles with changing challenges.",
+    relationships: "Enjoys lively exchange and freedom; consistency in agreements makes flexibility feel safe.",
+    financialTendencies: "May prefer flexible choices but tire of repeated decisions; automatic savings and review dates provide structure.",
+    lifeChallenges: ["Maintaining direction", "Following through", "Balancing logic and emotion"],
+    personalDevelopment: ["Choose a few stable priorities", "Use decision deadlines", "Keep regular grounding routines"]
+  },
+  6: {
+    driverNumber: 6,
+    personality: "Often described as warm, responsible, and attentive to comfort, harmony, and close relationships.",
+    naturalBehavior: "May notice practical needs and take initiative to make people or environments feel cared for.",
+    strengths: ["Loyalty", "Service", "Aesthetic awareness"],
+    weaknesses: ["Overgiving", "Perfectionism", "Unspoken expectations"],
+    leadership: "Leads through service and cohesion; delegation makes care sustainable and recognizes others' abilities.",
+    career: "May find meaning in care, education, hospitality, design, or community-oriented responsibilities.",
+    relationships: "Values commitment and affection; shared responsibility prevents care from becoming one-sided.",
+    financialTendencies: "May prioritize comfort and family needs; a planned giving and household budget supports balance.",
+    lifeChallenges: ["Setting limits", "Avoiding overindulgence", "Allowing others to do things differently"],
+    personalDevelopment: ["Ask before taking over", "State needs directly", "Protect independent goals and rest"]
+  },
+  7: {
+    driverNumber: 7,
+    personality: "Often described as thoughtful, observant, and motivated by deeper understanding and independent inquiry.",
+    naturalBehavior: "May research carefully, reflect privately, and prefer meaningful discussion to constant activity.",
+    strengths: ["Analysis", "Research", "Independent judgment"],
+    weaknesses: ["Isolation", "Overthinking", "Delayed action"],
+    leadership: "Leads through expertise and careful judgment; visible communication helps others use the insight.",
+    career: "May prefer research, analysis, technology, investigation, or specialist work requiring concentration.",
+    relationships: "Values trust and depth; communicating the need for solitude keeps space from becoming distance.",
+    financialTendencies: "May research extensively before spending; a decision threshold prevents endless comparison.",
+    lifeChallenges: ["Connecting consistently", "Acting without total certainty", "Sharing emotions"],
+    personalDevelopment: ["Turn insights into practical steps", "Schedule connection", "Set a cutoff for research"]
+  },
+  8: {
+    driverNumber: 8,
+    personality: "Often described as persistent, accountable, and focused on managing resources and long-term outcomes.",
+    naturalBehavior: "May accept responsibility, track progress, and work steadily toward measurable goals.",
+    strengths: ["Management", "Discipline", "Long-range planning"],
+    weaknesses: ["Excessive seriousness", "Overcontrol", "Work-centered identity"],
+    leadership: "Leads through structure and accountability; fairness, empathy, and succession planning make authority sustainable.",
+    career: "May enjoy management, operations, finance, administration, or projects with long-term ownership.",
+    relationships: "Values dependability and shared goals; warmth and flexibility keep duty from displacing closeness.",
+    financialTendencies: "May prioritize security and long-term planning; regular reviews can keep caution proportionate.",
+    lifeChallenges: ["Managing slow progress", "Balancing work and rest", "Delegating without overcontrol"],
+    personalDevelopment: ["Measure wellbeing alongside outcomes", "Practice delegation", "Recognize progress before the final goal"]
+  },
+  9: {
+    driverNumber: 9,
+    personality: "Often described as energetic, courageous, and motivated to act on strong values or protect others.",
+    naturalBehavior: "May respond quickly to challenges and encourage people through visible effort.",
+    strengths: ["Courage", "Determination", "Compassionate action"],
+    weaknesses: ["Impatience", "Aggressive reactions", "Burnout"],
+    leadership: "Leads through action and conviction; consultation and patience improve the quality of urgent decisions.",
+    career: "May prefer advocacy, community work, leadership, emergency response, or other action-oriented roles.",
+    relationships: "Values loyalty and passion; listening and repair after conflict protect trust.",
+    financialTendencies: "May act generously or decisively under emotional urgency; independent review and planned giving limits help.",
+    lifeChallenges: ["Pacing energy", "Avoiding conflict escalation", "Choosing a sustainable scope of service"],
+    personalDevelopment: ["Pause before high-stakes responses", "Plan recovery time", "Pair conviction with curiosity"]
+  }
+};
+
+module.exports = { DRIVER_NUMBER_MEANINGS };

@@ -12,8 +12,9 @@
     "prestart": "node scripts/sync-version.js",
     "preview": "serve public --listen 4173",
     "start": "npm run build && npm run preview",
-    "check": "node --check src/web/app.js && node --check src/core/numerology.js && node --check src/core/validation.js && node --check src/core/colors.js && node --check src/tools/special-date.js",
-    "ci": "npm run check && npm run build"
+    "check": "node --check src/web/app.js && node --check src/core/numerology.js && node --check src/core/validation.js && node --check src/core/colors.js && node --check src/core/loshu.js && node --check src/tools/special-date.js && node --check src/utils/loshu-render.js && node --check src/utils/loshu-meaning-render.js && node --check src/config/loshu_config/index.js && node --check src/config/loshu_config/number-meanings.js && node --check src/config/loshu_config/missing-number-meanings.js && node --check src/config/loshu_config/repeated-number-meanings.js && node --check src/config/loshu_config/driver-number-meanings.js && node --check src/config/loshu_config/destiny-number-meanings.js",
+    "test": "node --test",
+    "ci": "npm run check && npm test && npm run build"
   },
   "engines": {
     "node": ">=24.0.0"

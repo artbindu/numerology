@@ -1,6 +1,9 @@
 const { getNumerologyFromDob, getNumerologyFromName, getNumberDetails } = require("../core/numerology");
 const { normalizeDob, normalizeDigitInput, normalizeName } = require("../core/validation");
 const { getColorCss, getOrderedColorEntries } = require("../core/colors");
+const { getLoShuAnalysis } = require("../core/loshu");
+const { renderLoShuGrid } = require("../utils/loshu-render");
+const { renderNumberMeaningDetails } = require("../utils/loshu-meaning-render");
 const { isPalindrome, isSpecial, isSameFrequency } = require("../tools/special-date");
 const { card, renderNumberDetails } = require("../utils/render");
 const { getElement, getAllElements } = require("../utils/dom");
@@ -9,6 +12,8 @@ const {
   loadSidebarState,
   saveSidebarState
 } = require("../utils/sidebar-state");
+const { saveAppInput, loadAppInput } = require("../config/storage");
+const { MODE_CONFIG } = require("../config/appConfig");
 const { toTitleCase } = require("../utils/text");
 const { version: APP_VERSION } = require("../../package.json");
 
@@ -20,6 +25,8 @@ const workspace = getElement(".workspace");
 const form = getElement("#numerology-form");
 const formShell = getElement(".form-shell");
 const input = getElement("#input-value");
+const submitButton = getElement("#submit-button");
+const resetInputButton = getElement("#reset-input-btn");
 const inputLabel = getElement("#input-label");
 const result = getElement("#result");
 const colorGuide = getElement("#color-guide");
@@ -31,6 +38,7 @@ const error = getElement("#error");
 
 let activeMode = "dob";
 let hasRenderedColorGuide = false;
+let activeLoShuMeaningContext = null;
 
 let sidebarState = loadSidebarState();
 
@@ -176,18 +184,24 @@ const getSpecialDateSummary = function (dob) {
   };
 };
 
-const renderDobDetails = function (dob) {
-  const details = getNumerologyFromDob(dob);
+const renderDobDetails = function (dob, details = getNumerologyFromDob(dob)) {
   const specialDateSummary = getSpecialDateSummary(dob);
+  const specialDateCard = specialDateSummary.isSpecialDate
+    ? card(
+        "Special Date Check",
+        `<p class="kpi">Yes</p><p>${specialDateSummary.description}</p>`
+      )
+    : "";
+  const summaryClass = specialDateSummary.isSpecialDate ? " has-special-date" : "";
 
   result.innerHTML = [
-    card("Input DOB", `<p class="kpi">${details.dob}</p>`),
-    specialDateSummary.isSpecialDate
-      ? card(
-          "Special Date Check",
-          `<p class="kpi">Yes</p><p>${specialDateSummary.description}</p>`
-        )
-      : "",
+    `<div class="dob-summary${summaryClass}">
+      <div class="dob-summary-stack">
+        ${card("Input DOB", `<p class="kpi">${details.dob}</p>`)}
+        ${card("Current Age", `<p class="kpi">${details.age}</p>`)}
+      </div>
+      ${specialDateCard}
+    </div>`,
     renderNumberDetails("Mulank", details.mulankDetails),
     renderNumberDetails("Bhagyank", details.bhagyankDetails)
   ].join("");
@@ -195,9 +209,16 @@ const renderDobDetails = function (dob) {
 
 const renderNameDetails = function (name) {
   const details = getNumerologyFromName(name);
+  const safeName = String(details.name).replace(/[&<>"']/g, (character) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[character]);
 
   result.innerHTML = [
-    card("Input Name", `<p class="kpi">${details.name}</p>`),
+    card("Input Name", `<p class="kpi">${safeName}</p>`),
     renderNumberDetails("Name Number", details.nameDetails)
   ].join("");
 };
@@ -206,6 +227,63 @@ const renderSingleNumber = function (mode, number) {
   const detail = getNumberDetails(number, mode);
   result.innerHTML = renderNumberDetails(mode === "mulank" ? "Mulank" : "Bhagyank", detail);
 };
+
+const renderModeInput = function (mode, value) {
+  if (mode === "dob") {
+    renderDobDetails(normalizeDob(value));
+    return;
+  }
+
+  if (mode === "name") {
+    renderNameDetails(normalizeName(value));
+    return;
+  }
+
+  if (mode === "loshu") {
+    const dob = normalizeDob(value);
+    const analysis = getLoShuAnalysis(dob);
+    const numerology = getNumerologyFromDob(dob);
+    activeLoShuMeaningContext = {
+      analysis,
+      driverNumber: numerology.mulank,
+      destinyNumber: numerology.bhagyank
+    };
+    result.innerHTML = renderLoShuGrid(analysis, activeLoShuMeaningContext);
+    return;
+  }
+
+  const number = normalizeDigitInput(value, mode === "mulank" ? "Mulank" : "Bhagyank");
+  renderSingleNumber(mode, number);
+};
+
+if (result) {
+  result.addEventListener("click", (event) => {
+    const closeButton = event.target.closest("[data-close-loshu-detail]");
+    const detailPanel = result.querySelector("#loshu-number-detail");
+
+    if (closeButton && detailPanel) {
+      detailPanel.hidden = true;
+      detailPanel.innerHTML = "";
+      result.querySelectorAll(".loshu-cell[aria-pressed='true']").forEach((cell) => {
+        cell.setAttribute("aria-pressed", "false");
+      });
+      return;
+    }
+
+    const cell = event.target.closest("button.loshu-cell[data-loshu-number]");
+    if (!cell || !detailPanel || !activeLoShuMeaningContext) {
+      return;
+    }
+
+    const number = Number(cell.dataset.loshuNumber);
+    result.querySelectorAll(".loshu-cell").forEach((gridCell) => {
+      gridCell.setAttribute("aria-pressed", String(gridCell === cell));
+    });
+    detailPanel.innerHTML = renderNumberMeaningDetails(activeLoShuMeaningContext.analysis, number);
+    detailPanel.hidden = false;
+    detailPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  });
+}
 
 const setActiveModeUi = function (mode) {
   sidebarModeButtons.forEach((btn) => {
@@ -226,6 +304,7 @@ const setColorGuideButtonActive = function (isActive) {
 
 const enterColorGuideMode = function () {
   hideNumerologyForm();
+  result.innerHTML = "";
   setActiveModeUi("");
   setColorGuideButtonActive(true);
   showColorGuide("sidebar-button");
@@ -239,6 +318,7 @@ const exitColorGuideMode = function () {
 
 const updateMode = function (mode) {
   activeMode = mode;
+  activeLoShuMeaningContext = null;
   setActiveModeUi(mode);
   exitColorGuideMode();
 
@@ -246,23 +326,33 @@ const updateMode = function (mode) {
     currentModeValue.textContent = mode.toUpperCase();
   }
 
-  if (mode === "dob") {
-    inputLabel.textContent = "Date of Birth (DD-MM-YYYY)";
-    input.placeholder = "24-08-1993";
-  } else if (mode === "name") {
-    inputLabel.textContent = "Name";
-    input.placeholder = "Rahul Sharma";
-  } else if (mode === "mulank") {
-    inputLabel.textContent = "Mulank Number (1-9)";
-    input.placeholder = "6";
-  } else {
-    inputLabel.textContent = "Bhagyank Number (1-9)";
-    input.placeholder = "9";
+  const config = MODE_CONFIG[mode];
+  if (config) {
+    inputLabel.textContent = config.label;
+    input.placeholder = config.placeholder;
+  }
+
+  if (submitButton) {
+    submitButton.textContent = mode === "loshu" ? "Calculate" : "Generate Insight";
+  }
+  if (resetInputButton) {
+    resetInputButton.hidden = mode !== "loshu";
   }
 
   input.value = "";
   error.textContent = "";
   result.innerHTML = "";
+
+  // Load stored input for this mode
+  const storedInput = loadAppInput(mode);
+  if (storedInput && input) {
+    input.value = storedInput;
+    try {
+      renderModeInput(mode, storedInput);
+    } catch (e) {
+      error.textContent = e.message;
+    }
+  }
 };
 
 sidebarModeButtons.forEach((btn) => {
@@ -321,27 +411,44 @@ document.addEventListener("keydown", (event) => {
 
 window.addEventListener("resize", syncSidebarForViewport);
 
+if (resetInputButton) {
+  resetInputButton.addEventListener("click", () => {
+    input.value = "";
+    error.textContent = "";
+    result.innerHTML = "";
+    activeLoShuMeaningContext = null;
+    saveAppInput("", activeMode);
+    input.focus();
+  });
+}
+
 form.addEventListener("submit", (event) => {
   event.preventDefault();
 
   const value = input.value.trim();
   error.textContent = "";
   result.innerHTML = "";
+  activeLoShuMeaningContext = null;
   exitColorGuideMode();
+
+  // Save input to localStorage with mode-based key
+  if (value) {
+    saveAppInput(value, activeMode);
+  }
 
   try {
     if (activeMode === "dob") {
-      renderDobDetails(normalizeDob(value));
+      const dob = normalizeDob(value);
+      const details = getNumerologyFromDob(dob);
+
+      saveAppInput(dob, activeMode);
+      saveAppInput(String(details.mulank), "mulank");
+      saveAppInput(String(details.bhagyank), "bhagyank");
+      renderDobDetails(dob, details);
       return;
     }
 
-    if (activeMode === "name") {
-      renderNameDetails(normalizeName(value));
-      return;
-    }
-
-    const number = normalizeDigitInput(value, activeMode === "mulank" ? "Mulank" : "Bhagyank");
-    renderSingleNumber(activeMode, number);
+    renderModeInput(activeMode, value);
   } catch (e) {
     error.textContent = e.message;
   }
