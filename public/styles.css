@@ -223,6 +223,14 @@ body {
   cursor: pointer;
 }
 
+.top-user-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  margin: auto;
+  object-fit: contain;
+}
+
 .app {
   width: min(1320px, 96vw);
   margin: 0.9rem auto 1.8rem;
@@ -1333,7 +1341,7 @@ input::placeholder {
   .top-nav {
     padding: 0 0.68rem;
     gap: 0.5rem;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   .top-search {
@@ -1439,8 +1447,15 @@ input::placeholder {
 }
 
 @media (max-width: 480px) {
+  .top-nav-left,
+  .top-brand {
+    min-width: 0;
+    gap: 0.35rem;
+  }
+
   .top-brand-title {
-    font-size: 0.84rem;
+    font-size: 0.76rem;
+    white-space: nowrap;
   }
 
   .nav-icon-btn,
