@@ -1,6 +1,6 @@
 {
   "name": "numerology",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "author": "Biswasindhu Mandal",
   "description": "Numerology web app for DOB, Mulank, and Bhagyank insights",
   "scripts": {

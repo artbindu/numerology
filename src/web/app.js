@@ -422,6 +422,22 @@ if (resetInputButton) {
   });
 }
 
+input.addEventListener("input", () => {
+  if (activeMode !== "dob" && activeMode !== "loshu") {
+    return;
+  }
+
+  const value = input.value.trim();
+  if (/^\d{8}$/.test(value)) {
+    const cursor = input.selectionStart;
+    input.value = value.replace(/^(\d{2})(\d{2})(\d{4})$/, "$1-$2-$3");
+    if (cursor !== null) {
+      const position = cursor + (cursor > 2 ? 1 : 0) + (cursor > 4 ? 1 : 0);
+      input.setSelectionRange(position, position);
+    }
+  }
+});
+
 form.addEventListener("submit", (event) => {
   event.preventDefault();
 
@@ -437,14 +453,18 @@ form.addEventListener("submit", (event) => {
   }
 
   try {
-    if (activeMode === "dob") {
+    if (activeMode === "dob" || activeMode === "loshu") {
       const dob = normalizeDob(value);
       const details = getNumerologyFromDob(dob);
 
       saveAppInput(dob, activeMode);
       saveAppInput(String(details.mulank), "mulank");
       saveAppInput(String(details.bhagyank), "bhagyank");
-      renderDobDetails(dob, details);
+      if (activeMode === "dob") {
+        renderDobDetails(dob, details);
+      } else {
+        renderModeInput(activeMode, dob);
+      }
       return;
     }
 

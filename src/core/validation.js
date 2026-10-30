@@ -1,5 +1,8 @@
 const normalizeDob = function (value) {
-  const cleaned = value.trim().replace(/\//g, "-");
+  const trimmed = value.trim();
+  const cleaned = /^\d{8}$/.test(trimmed)
+    ? `${trimmed.slice(0, 2)}-${trimmed.slice(2, 4)}-${trimmed.slice(4)}`
+    : trimmed.replace(/\//g, "-");
   if (!/^\d{2}-\d{2}-\d{4}$/.test(cleaned)) {
     throw new Error("DOB must be in DD-MM-YYYY format.");
   }
